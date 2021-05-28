@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+
 import './App.css';
+import Login from './components/User/Login';
+import Dashboard from './components/User/Dashboard';
+import TopHeader from './components/User/TopHeader';
+import { authActions } from './store/auth';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
+  const [email, setEmail] = useState('');
+
+    const dispatch = useDispatch();
+    const isAuth = useSelector((state) => state.auth.isAuthenticated);
+
+    const history = useHistory();
+
+    useEffect(() => {
+      setEmail(email);
+    }, [email])
+
+    const loginHandler = (email) => {
+      dispatch({type: 'login'});
+      setEmail(email);
+      history.push("/dashboard");
+    };
+
+    const logoutHandler = () => {
+      dispatch({type: 'logout'});
+      dispatch(authActions.isAdmin({isAdmin: false}));
+      setEmail('');
+      history.push("/");
+    };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TopHeader isAuthenticated={isAuth} email={email} onLogout={logoutHandler} />
+      <Switch>
+            <Route path='/' exact>{!isAuth && <Login onLogin={loginHandler} isAuthenticated={isAuth} />}</Route>
+            <Route path='/dashboard' exact>{isAuth && <Dashboard isAuthenticated={isAuth} />}</Route>
+      </Switch>
     </div>
   );
 }

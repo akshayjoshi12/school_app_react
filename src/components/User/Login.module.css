@@ -1,0 +1,11 @@
+.bkRed {
+	border: 1px solid red !important;
+}
+.pad10 {
+	padding:10px;
+}
+.loginContainer {
+	max-width: 30rem;
+	background-color: #F7ECF7;
+	text-align: left;
+}
